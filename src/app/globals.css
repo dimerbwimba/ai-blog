@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.ProseMirror {
+  min-height: 500px;
+  padding: 1rem;
+  outline: none;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding: 0 1rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+/* Table Styles */
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ProseMirror table td,
+.ProseMirror table th {
+  min-width: 1em;
+  border: 1px solid #ced4da;
+  padding:8px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.ProseMirror table td p ,
+.ProseMirror table th p {
+  margin: 0px;
+  line-height: 1.2;
+}
+.ProseMirror table th {
+  background-color: #b8c2cb;
+}
+
+/* Table Controls */
+.tableWrapper {
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+/* Column resize handle */
+.resize-cursor {
+  cursor: col-resize;
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #adb5bd;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.resize-cursor:hover {
+  opacity: 1;
+}
+
+/* Selected cells */
+.selectedCell {
+  background-color: #b3d4fc;
+}
+
+/* Table wrapper to prevent layout shifts */
+.ProseMirror .table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 1rem 0;
+}
+
+@layer base {
+  :root {
+    /* pearl: #fafaff - Main background */
+    --background: 240 100% 98%;
+    --foreground: 0 0% 11%;
+    
+    /* platinum: #eef0f2 - Secondary elements */
+    --card: 220 13% 94%;
+    --card-foreground: 0 0% 11%;
+    --popover: 220 13% 94%;
+    --popover-foreground: 0 0% 11%;
+    
+    /* richblack: #1c1c1c - Primary elements */
+    --primary: 0 0% 11%;
+    --primary-foreground: 240 100% 98%;
+    
+    /* bone: #ecebe4 - Secondary elements */
+    --secondary: 51 13% 91%;
+    --secondary-foreground: 0 0% 11%;
+    
+    /* timberwolf: #daddd8 - Muted/Accent elements */
+    --muted: 90 6% 86%;
+    --muted-foreground: 0 0% 11%;
+    --accent: 90 6% 86%;
+    --accent-foreground: 0 0% 11%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 240 100% 98%;
+    
+    --border: 90 6% 86%;
+    --input: 90 6% 86%;
+    --ring: 0 0% 11%;
+    
+    --radius: 0.5rem;
+  }
+  .dark {
+    /* richblack: #1c1c1c - Dark mode background */
+    --background: 0 0% 11%;
+    --foreground: 240 100% 98%;
+    
+    /* richblack variations for cards */
+    --card: 0 0% 11%;
+    --card-foreground: 240 100% 98%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 240 100% 98%;
+    
+    /* pearl: #fafaff - Primary in dark mode */
+    --primary: 240 100% 98%;
+    --primary-foreground: 0 0% 11%;
+    
+    /* platinum: #eef0f2 - Secondary in dark mode */
+    --secondary: 220 13% 94%;
+    --secondary-foreground: 0 0% 11%;
+    
+    /* bone: #ecebe4 - Muted in dark mode */
+    --muted: 51 13% 91%;
+    --muted-foreground: 240 100% 98%;
+    
+    /* timberwolf: #daddd8 - Accent in dark mode */
+    --accent: 90 6% 86%;
+    --accent-foreground: 0 0% 11%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 240 100% 98%;
+    
+    --border: 90 6% 86%;
+    --input: 90 6% 86%;
+    --ring: 240 100% 98%;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table td,
+table th {
+  min-width: 1em;
+  border: 1px solid #ced4da;
+  padding:8px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+table td p ,
+table th p {
+  margin: 0px !important;
+  line-height: 1.2 !important;
+}
+
+
+.tippy-content {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.tippy-box {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+.tippy-content svg, 
+.tippy-content i, 
+.tippy-content .icon {
+  color: rgba(0, 0, 0, 0.532) !important;
+  fill: rgba(0, 0, 0, 0.041) !important; /* For SVG icons */
+}
+/* Target the editor container */
+.tiptap-editor, .ProseMirror {
+  background-color: white !important;
+  color: black; /* Ensure text is visible on the white background */
+}
+
+/* Optional: Remove unwanted inherited styles */
+.tiptap-editor * {
+  background: transparent !important;
+  color: inherit;
+}
+
+/* Editor Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror .is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
