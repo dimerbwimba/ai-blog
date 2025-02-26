@@ -4,7 +4,7 @@ import { HotelScraper } from '@/lib/scrapers/hotel-scraper'
 
 export const HotelService = {
   async getAllHotels() {
-    return await prisma.hotel.findMany({
+    return await prisma.accommodation.findMany({
       orderBy: {
         createdAt: 'desc'
       }
@@ -12,16 +12,19 @@ export const HotelService = {
   },
 
   async getHotelById(id: string) {
-    return await prisma.hotel.findUnique({
+    return await prisma.accommodation.findUnique({
       where: { id }
     })
   },
 
-  async createHotel(data: Omit<Hotel, 'id' | 'createdAt' | 'updatedAt'>) {
-    return await prisma.hotel.create({
-      data
-    })
-  },
+  // async createHotel(data: Omit<Hotel, 'id' | 'createdAt' | 'updatedAt'>) {
+  //   return await prisma.accommodation.create({
+  //     data: {
+  //       ...data,
+  //       type: 'hotel'
+  //     }
+  //   })
+  // },
 
   async scrapeAndProcessHotels(request: ScrapingRequest) {
     // 1. Scrape raw data
