@@ -1,4 +1,3 @@
-import { DestinationService } from "@/services/destination.service";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,20 +5,21 @@ import { Metadata } from "next";
 import { PostsPagination } from "@/components/shared/posts-pagination";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     page?: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
+  const {slug} = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/destinations/public/${params.slug}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/destinations/public/${slug}`
     );
     const destination = await response.json();
 
@@ -48,15 +48,16 @@ export async function generateMetadata({
   }
 }
 
-const POSTS_PER_PAGE = 6;
 
 const DestinationPage = async ({ params, searchParams }: PageProps) => {
-  const currentPage = Number(searchParams.page) || 1;
+  const {slug} = await params;
+  const {page} = await searchParams;
+  const currentPage = Number(page) || 1;
   const limit = 10;
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/destinations/public/${params.slug}?page=${currentPage}&limit=${limit}`,
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/destinations/public/${slug}?page=${currentPage}&limit=${limit}`,
       { next: { revalidate: 3600 } }
     );
 
@@ -152,7 +153,7 @@ const DestinationPage = async ({ params, searchParams }: PageProps) => {
                   <PostsPagination
                     currentPage={destination.pagination.currentPage}
                     totalPages={destination.pagination.pages}
-                    baseUrl={`/destinations/${params.slug}`}
+                    baseUrl={`/destinations/${slug}`}
                   />
                 </div>
               )}

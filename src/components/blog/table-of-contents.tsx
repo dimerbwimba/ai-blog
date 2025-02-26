@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Link2, ChevronRight } from "lucide-react"
 
 interface TableOfContentsProps {
-  contentRef: React.RefObject<HTMLDivElement>
+  contentRef: React.RefObject<HTMLDivElement | null>
 }
 
 interface HeadingData {

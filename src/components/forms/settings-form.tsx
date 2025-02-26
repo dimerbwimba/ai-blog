@@ -82,8 +82,9 @@ export function SettingsForm({ initialData }: SettingsFormProps) {
             } else {
                 toast.success("Settings updated successfully")
             }
-        } catch (error) {
+        } catch (error:any)  {
             toast.error("Something went wrong")
+            console.error(error)
         } finally {
             setIsLoading(false)
         }

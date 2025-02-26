@@ -9,15 +9,16 @@ function CheckIfUserIsAdmin(session: any) {
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     if (!session || !CheckIfUserIsAdmin(session)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     const data = await request.json()
-    const destination = await DestinationService.updateDestination(params.id, data)
+    const destination = await DestinationService.updateDestination(id, data)
     return NextResponse.json(destination)
   } catch {
     return NextResponse.json(

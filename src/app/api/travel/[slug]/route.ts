@@ -3,10 +3,11 @@ import { PostService } from '@/services/post.service'
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const post = await PostService.getPublicPostBySlug(params.slug)
+    const { slug } = await params
+    const post = await PostService.getPublicPostBySlug(slug)
     
     if (!post) {
       return NextResponse.json(

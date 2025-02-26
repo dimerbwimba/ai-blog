@@ -15,7 +15,6 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-  UniqueIdentifier
 } from '@dnd-kit/core'
 import {
   arrayMove,
@@ -25,15 +24,7 @@ import {
 } from '@dnd-kit/sortable'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
-import { SortableItem } from "./sortable-item"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Separator } from "@/components/ui/separator"
+
 
 interface OutlineSection {
   h2: string

@@ -9,7 +9,6 @@ export const AIPostService = {
       // 1. Research the topic
       const research = await TavilyService.researchTopic(
         prompt.topic,
-        prompt.destination
       )
       console.log(research)
       // 2. Generate the content

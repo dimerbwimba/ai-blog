@@ -65,7 +65,7 @@ export function PostFormContext({ form }: PostFormContextProps) {
       const response = await fetch("/api/destinations")
       if (!response.ok) {
         throw new Error("Failed to load destinations")
-      }4
+      }
       const data = await response.json()
       setDestinations(data)
     } catch (error:any) {
@@ -114,7 +114,7 @@ export function PostFormContext({ form }: PostFormContextProps) {
             <FormField
               control={form.control}
               name="destinations"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
                     <div className="flex items-center">
@@ -163,7 +163,7 @@ export function PostFormContext({ form }: PostFormContextProps) {
             <FormField
               control={form.control}
               name="categories"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-between">
                     <div className="flex items-center">

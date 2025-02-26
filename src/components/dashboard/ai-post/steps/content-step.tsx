@@ -12,9 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
-import { OutlineSection } from "@/types/ai"
+
+interface OutlineSection {
+  h2: string
+  h3: string[]
+}
 
 interface ContentStepProps {
   onContentGenerated: (sections: OutlineSection[]) => void
@@ -43,7 +45,6 @@ export function ContentStep({
   const [expandedSections, setExpandedSections] = useState<string[]>([])
   const [previewContent, setPreviewContent] = useState<string | null>(null)
   const [showPreview, setShowPreview] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   const toggleSection = (h2: string) => {
     setExpandedSections(prev => 

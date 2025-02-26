@@ -120,7 +120,7 @@ export function DestinationsList() {
     <>
       <div className="flex justify-between items-center"> 
         <h1 className="text-2xl font-bold">
-          You've created {destinations.length} destinations
+          You&apos;ve created {destinations.length} destinations
         </h1>
       </div>
       <Separator className="my-4" />  

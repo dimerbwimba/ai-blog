@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Bot, Info, Plus, Sparkles, Wand2 } from "lucide-react"
+import { Bot, Info, Plus, Sparkles } from "lucide-react"
 import { AIPostForm } from "./ai-post-form"
 import { useState } from "react"
 import {

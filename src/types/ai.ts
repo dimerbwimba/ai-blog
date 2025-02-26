@@ -23,17 +23,18 @@ export interface AIPostContent {
 }
 
 export interface ResearchResult {
-  title: string
-  answer:string
-  content: string
-  url: string
+  answer: string
+  results: {
+    rowContent: string
+    content: string
+    url: string
+  }[]
+  images: {
+    url: string
+  }[]
 }
 
 // Add this interface to define the expected outline format
-interface OutlineSection {
-  h2: string;
-  h3: string[];
-}
 
 // Add to existing types
 export const outlineSchema = z.array(z.object({

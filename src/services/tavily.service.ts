@@ -1,8 +1,7 @@
-import { env } from '@/lib/env'
 import { ResearchResult } from '@/types/ai'
 import { tavily } from "@tavily/core"
 export const TavilyService = {
-  async researchTopic(topic: string, destination: string): Promise<ResearchResult[]> {
+  async researchTopic(topic: string): Promise<ResearchResult> {
     try {
       const client =  tavily({
         apiKey: process.env.TAVILY_API_KEY || "",
@@ -50,7 +49,7 @@ export const TavilyService = {
         }
       )      
       // Process and structure the results
-      return results
+      return results as unknown as ResearchResult
     } catch (error) {
       console.error('[TAVILY_RESEARCH_ERROR]', error)
       throw new Error('Failed to research topic')
@@ -60,7 +59,7 @@ export const TavilyService = {
   async getRelatedTopics(topic: string, destination: string): Promise<string[]> {
     try {
       const client =  tavily({
-        apiKey: env.TAVILY_API_KEY,
+        apiKey: process.env.TAVILY_API_KEY || "",
       })
 
       const results = await client.search(
@@ -71,7 +70,7 @@ export const TavilyService = {
           includeAnswer: true
         })
 
-      return results    
+      return results as unknown as string[]
     } catch (error) {
       console.error('[TAVILY_RELATED_TOPICS_ERROR]', error)
       return []

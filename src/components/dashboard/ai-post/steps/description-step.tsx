@@ -42,7 +42,7 @@ export function DescriptionStep({
     try {
       const descriptions = await onGenerate(initialData?.title || '')
       setSuggestedDescriptions(descriptions)
-    } catch (error) {
+    } catch {
       toast("Failed to generate descriptions")
     }
   }

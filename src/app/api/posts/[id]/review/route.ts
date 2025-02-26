@@ -11,9 +11,10 @@ const reviewSchema = z.object({
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id || session.user.role !== "ADMIN") {
@@ -24,7 +25,7 @@ export async function POST(
     const { status, feedback } = reviewSchema.parse(body)
 
     const post = await PostManagementService.reviewPost({
-      id: params.id,
+      id,
       status,
       feedback,
       reviewerId: session.user.id

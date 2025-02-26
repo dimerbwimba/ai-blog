@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface PostsPaginationProps {
   currentPage: number;
@@ -15,7 +15,6 @@ export const PostsPagination = ({
   totalPages,
   baseUrl,
 }: PostsPaginationProps) => {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const createPageURL = (pageNumber: number | string) => {

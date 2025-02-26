@@ -24,14 +24,15 @@ const postUpdateSchema = z.object({
 });
 
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || !isAuthorized(session.user.role)) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    await PostService.deletePost(params.id);
+    const { id } = await params
+    await PostService.deletePost(id);
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error("[POST_DELETE]", error);
@@ -41,9 +42,10 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.id || !isAuthorized(session.user.role)) {
@@ -51,7 +53,7 @@ export async function PATCH(
     }
 
     // Verify post exists and belongs to user
-    const existingPost = await PostService.getPostById(params.id);
+    const existingPost = await PostService.getPostById(id);
     if (!existingPost) {
       return new NextResponse("Post not found", { status: 404 });
     }
@@ -74,7 +76,7 @@ export async function PATCH(
     }
 
     const post = await PostService.updatePost({
-      id: params.id,
+      id,
       ...body,
       authorId: session.user.id,
     });
@@ -97,16 +99,17 @@ export async function PATCH(
 }
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
   ) {
     try {
+      const { id } = await params
       const session = await getServerSession(authOptions)
       
       if (!session?.user?.id || !isAuthorized(session.user.role)) {
         return new NextResponse("Unauthorized", { status: 401 })
       }
   
-      const post = await PostService.getPostById(params.id)
+      const post = await PostService.getPostById(id)
       
       if (!post) {
         return new NextResponse("Post not found", { status: 404 })

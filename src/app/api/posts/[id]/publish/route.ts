@@ -6,16 +6,17 @@ import { isAuthorized } from '@/lib/auth-check'
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id || !isAuthorized(session.user.role)) {
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
-    const post = await PostService.publishPost(params.id)
+    const post = await PostService.publishPost(id)
     
     return NextResponse.json(post)
   } catch (error) {

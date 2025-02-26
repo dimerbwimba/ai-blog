@@ -25,6 +25,7 @@ import { OutlineStep } from "./steps/outline-step"
 import { ContentStep } from "./steps/content-step"
 import { EndStep } from "./steps/end-step"
 import { FAQsStep } from "./steps/faqs-step"
+import { OutlineSection } from "@/hooks/use-ai-post-form"
 
 interface AIPostFormProps {
   onSuccess: () => void
@@ -224,9 +225,9 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
     updateFormData({ currentStep: 4 })
   }
 
-  const handleContentGenerated = (sections: any[]) => {
+  const handleContentGenerated = (outline: any[]) => {
     updateFormData({
-      sections,
+      outline,
       currentStep: 7
     })
   }
@@ -275,9 +276,9 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
     })
   }
 
-  const handleBackToFAQs = () => {
-    updateFormData({ currentStep: 7 })
-  }
+  // const handleBackToFAQs = () => {
+  //   updateFormData({ currentStep: 7 })
+  // }
 
   return (
     <div className="space-y-8">
@@ -385,7 +386,10 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
             title: formData.title || '',
             description: formData.description || '',
             keywords: formData.keywords || [],
-            outline: formData.outline || []
+            outline: (formData.outline || []).map((section: any) => ({
+              h2: section.h2 || '',
+              h3: section.h3 || []
+            }))
           }}
         />
       )}
@@ -398,7 +402,7 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
             title: formData.title || '',
             description: formData.description || '',
             keywords: formData.keywords || [],
-            outline: formData.outline || []
+            outline: formData.outline as OutlineSection[]
           }}
         />
       )}

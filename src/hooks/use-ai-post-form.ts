@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 interface AIPostFormData {
   title: string
   slug: string
-  outline: string[]
+  outline: OutlineSection[]
   content: string
   conclusion: string
   faqs: Array<{ question: string; answer: string }>
@@ -20,6 +20,16 @@ interface AIPostFormData {
   suggestedTags?: string[]
   suggestedKeywords?: string[]
   suggestedOutline?: string[]
+  sections?: Array<{
+    h2: string
+    content: string
+  }>
+}
+
+export interface OutlineSection {
+  h2: string
+  h3: string[]
+  content?: string
 }
 
 const STORAGE_KEY = 'ai_post_form_data'
@@ -81,6 +91,7 @@ function getInitialState(initialData?: Partial<AIPostFormData>): AIPostFormData 
     suggestedTags: [],
     suggestedKeywords: [],
     suggestedOutline: [],
+    sections: [],
     ...initialData
   }
 } 

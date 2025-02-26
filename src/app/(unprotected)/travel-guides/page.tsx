@@ -9,7 +9,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
   title: "Travel Guides - Expert Tips & Destinations",
@@ -80,9 +79,10 @@ async function getTravelGuides(page: number): Promise<TravelGuidesResponse> {
 export default async function TravelGuidesPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const currentPage = Number(searchParams.page) || 1;
+  const {page} = await searchParams;
+  const currentPage = Number(page) || 1;
   const { posts, pagination } = await getTravelGuides(currentPage);
 
   return (

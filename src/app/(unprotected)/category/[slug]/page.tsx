@@ -3,21 +3,21 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { PostsPagination } from "@/components/shared/posts-pagination";
 import { formatDate } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     page?: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const {slug} = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/categories/public/${params.slug}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/categories/public/${slug}`
     );
     const category = await response.json();
 
@@ -47,12 +47,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 const CategoryPage = async ({ params, searchParams }: PageProps) => {
-  const currentPage = Number(searchParams.page) || 1;
+  const {slug} = await params;
+  const {page} = await searchParams;
+  const currentPage = Number(page) || 1;
   const limit = 10;
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/categories/public/${params.slug}?page=${currentPage}&limit=${limit}`,
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/categories/public/${slug}?page=${currentPage}&limit=${limit}`,
       { next: { revalidate: 3600 } }
     );
 
@@ -163,7 +165,7 @@ const CategoryPage = async ({ params, searchParams }: PageProps) => {
             <PostsPagination
               currentPage={category.pagination.currentPage}
               totalPages={category.pagination.pages}
-              baseUrl={`/category/${params.slug}`}
+              baseUrl={`/category/${slug}`}
             />
           </div>
         )}

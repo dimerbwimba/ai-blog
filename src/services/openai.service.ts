@@ -1,20 +1,20 @@
-import { env } from "@/lib/env";
 import { AIPostContent, AIPostPrompt, ResearchResult } from "@/types/ai";
 import OpenAI from "openai";
 import { Hotel } from "@/types/hotel";
 import { TavilyService } from "./tavily.service";
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
+import { slugify } from "@/lib/utils";
+// import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
+// import { AzureKeyCredential } from "@azure/core-auth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.AI_BASE_URL,
 });
 
-const client = ModelClient(
-  "https://models.github.ai/inference",
-  new AzureKeyCredential(process.env.OPENAI_API_KEY || "")
-);
+// const client = ModelClient(
+//   "https://models.github.ai/inference",
+//   new AzureKeyCredential(process.env.OPENAI_API_KEY || "")
+// );
 
 export const OpenAIService = {
   async generateTitles(topic: string): Promise<string[]> {
@@ -201,8 +201,8 @@ export const OpenAIService = {
       }
 
       return {
-        tags: result.tags.map((tag) => tag.toLowerCase()),
-        keywords: result.keywords.map((keyword) => keyword.toLowerCase()),
+        tags: result.tags.map((tag: string) => tag.toLowerCase()),
+        keywords: result.keywords.map((keyword: string) => keyword.toLowerCase()),
       };
     } catch (error) {
       console.error("[OPENAI_GENERATE_TAGS_ERROR]", error);
@@ -220,9 +220,8 @@ export const OpenAIService = {
   }): Promise<string[]> {
     try {
        // 1. Research the topic
-    const research = await TavilyService.researchTopic(
-       title ,
-     ""
+    const research: ResearchResult = await TavilyService.researchTopic(
+       title
     )
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
@@ -338,7 +337,7 @@ export const OpenAIService = {
   
   async generateBlogPost(
     prompt: AIPostPrompt,
-    research: ResearchResult[]
+    research: ResearchResult
   ): Promise<AIPostContent> {
     try {
       // Generate the main content
@@ -425,18 +424,15 @@ export const OpenAIService = {
       throw new Error("Failed to generate blog post");
     }
   },
-
   generateSlug(title: string): string {
     return title
       .toLowerCase()
       .replace(/[^\w\s-]/g, "")
       .replace(/\s+/g, "-");
   },
-
   generateSEOSlug(title: string): string {
     return `${this.generateSlug(title)}-travel-guide`;
   },
-
   async processHotelData(
     rawData: any[]
   ): Promise<Omit<Hotel, "id" | "createdAt" | "updatedAt">[]> {
@@ -469,7 +465,6 @@ export const OpenAIService = {
 
     return JSON.parse(response.choices[0].message.content || "{}");
   },
-
   async generateSectionContent(params: {
     title: string
     subsections: string[]
@@ -483,7 +478,6 @@ export const OpenAIService = {
     // 1. Research the topic
     const research = await TavilyService.researchTopic(
       params.context.title+":"+ params.title ,
-     ""
     )
     const prompt = `
       Write a detailed section for a blog post about "${params.context.title}".
@@ -537,7 +531,6 @@ export const OpenAIService = {
 
     return response.choices[0].message.content || ''
   },
-
   async generateFAQs(params: {
     title: string
     description: string

@@ -2,7 +2,7 @@ import { checkRole } from "@/lib/auth-check"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardLayout } from "@/components/dashboard/layout"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, BotIcon, SettingsIcon } from "lucide-react"
+import { PlusCircle,SettingsIcon } from "lucide-react"
 import Link from "next/link"
 
 export default async function DashboardPage() {

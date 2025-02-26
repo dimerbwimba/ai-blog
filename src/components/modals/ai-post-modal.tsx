@@ -1,13 +1,11 @@
 "use client"
 
-import { useCallback, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import { useCallback } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useAiPostModal } from '@/store/use-ai-post-modal'
 import { AIPostForm } from '../dashboard/ai-post/ai-post-form'
 const  AiPost= () => {
  const { isOpen, onClose } = useAiPostModal()
-  const [isLoading, setIsLoading] = useState(false)
 
   const handleClose = useCallback(() => {
     onClose()

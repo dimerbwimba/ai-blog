@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth"
 import { prisma } from "@/lib/prisma"
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
+import { JWT } from "next-auth/jwt"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -52,13 +53,14 @@ export const authOptions: NextAuthOptions = {
       }
 
       return {
+        ...token,
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         image: dbUser.image,
         role: dbUser.role,
         emailVerified: dbUser.emailVerified,
-      }
+      } as JWT
     },
   },
 } 

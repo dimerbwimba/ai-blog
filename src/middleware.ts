@@ -5,7 +5,6 @@ export default withAuth(
   function middleware(req) {
     const token = req.nextauth.token
     const isAuth = !!token
-    const isAuthPage = req.nextUrl.pathname.startsWith('/auth')
     const isDashboardPage = req.nextUrl.pathname.startsWith('/dashboard')
     
     // Check if user is authorized (WRITER or ADMIN)

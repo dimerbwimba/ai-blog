@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { Hotel, ScrapingRequest } from '@/types/hotel'
 import { HotelScraper } from '@/lib/scrapers/hotel-scraper'
-import { OpenAIService } from './openai.service'
 
 export const HotelService = {
   async getAllHotels() {

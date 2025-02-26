@@ -27,11 +27,11 @@ const Navbar = () => {
       <div className="container flex h-10 items-center">
         {/* Logo/Brand */}
         <div className="mr-4 hidden md:flex">
-          <a href="/" className="mr-6 flex items-center space-x-2">
+          <Link href="/" className="mr-6 flex items-center space-x-2">
             <span className="hidden font-bold sm:inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
               TravelKaya
             </span>
-          </a>
+          </Link>
           <Separator orientation="vertical" className="h-6" />
         </div>
         {/* Desktop Navigation */}
