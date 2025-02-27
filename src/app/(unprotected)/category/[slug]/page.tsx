@@ -78,7 +78,7 @@ const CategoryPage = async ({ params, searchParams }: PageProps) => {
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <div className="text-center text-white">
               <h1 className="text-4xl font-bold mb-4">{category.name}</h1>
-              <p className="text-lg max-w-2xl mx-auto px-4">
+              <p className="text-lg max-w-2xl mx-auto px-4 line-clamp-3">
                 {category.description}
               </p>
             </div>
@@ -98,7 +98,7 @@ const CategoryPage = async ({ params, searchParams }: PageProps) => {
         <div className="space-y-12">
           {category.posts.map((post: any) => (
             <article key={post.id} className="group">
-              <Link href={`/travel/${post.seo_slug}`}>
+              <div className="block">
                 <div className="relative aspect-[16/9] rounded-lg overflow-hidden mb-4">
                   <Image
                     src={post.image}
@@ -108,9 +108,11 @@ const CategoryPage = async ({ params, searchParams }: PageProps) => {
                   />
                 </div>
                 <div className="space-y-3">
-                  <h2 className="text-2xl font-semibold group-hover:text-blue-600 transition-colors">
-                    {post.title}
-                  </h2>
+                  <Link href={`/travel/${post.seo_slug}`} className="block">  
+                    <h2 className="text-2xl font-semibold group-hover:text-blue-600 transition-colors">
+                      {post.title}
+                    </h2>
+                  </Link>
                   <p className="text-gray-600 line-clamp-2">
                     {post.description}
                   </p>
@@ -144,7 +146,7 @@ const CategoryPage = async ({ params, searchParams }: PageProps) => {
                     )}
                   </div>
                 </div>
-              </Link>
+              </div>
             </article>
           ))}
         </div>

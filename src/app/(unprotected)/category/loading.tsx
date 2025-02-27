@@ -3,38 +3,38 @@
 import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 
-const inspirationalQuotes = [
+const categoryQuotes = [
   {
-    quote: "The beginning is the most important part of the work.",
-    author: "Plato"
+    quote: "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.",
+    author: "Marcel Proust"
   },
   {
-    quote: "Every great journey begins with a single step.",
-    author: "Confucius"
+    quote: "One's destination is never a place, but a new way of seeing things.",
+    author: "Henry Miller"
   },
   {
-    quote: "Start where you are. Use what you have. Do what you can.",
-    author: "Arthur Ashe"
+    quote: "The world is full of magical things patiently waiting for our senses to grow sharper.",
+    author: "W.B. Yeats"
   },
   {
-    quote: "The secret of getting ahead is getting started.",
-    author: "Mark Twain"
-  },
-  {
-    quote: "Dreams don't work unless you do.",
-    author: "John C. Maxwell"
-  },
-  {
-    quote: "The way to get started is to quit talking and begin doing.",
-    author: "Walt Disney"
-  },
-  {
-    quote: "Every moment is a fresh beginning.",
-    author: "T.S. Eliot"
-  },
-  {
-    quote: "The journey of discovery begins with curiosity.",
+    quote: "Life is a collection of moments and experiences that shape who we are.",
     author: "Unknown"
+  },
+  {
+    quote: "Every place has a story waiting to be discovered.",
+    author: "Unknown"
+  },
+  {
+    quote: "The beauty of the world lies in the diversity of its people.",
+    author: "Unknown"
+  },
+  {
+    quote: "Exploration is really the essence of the human spirit.",
+    author: "Frank Borman"
+  },
+  {
+    quote: "The universe is full of magical things patiently waiting for our wits to grow sharper.",
+    author: "Eden Phillpotts"
   }
 ]
 
@@ -43,7 +43,7 @@ export default function Loading() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentQuote((prev) => (prev + 1) % inspirationalQuotes.length)
+      setCurrentQuote((prev) => (prev + 1) % categoryQuotes.length)
     }, 2000)
 
     return () => clearInterval(interval)
@@ -56,7 +56,7 @@ export default function Loading() {
           <div className="flex items-center justify-center space-x-2">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <span className="text-lg font-medium text-muted-foreground animate-pulse">
-              Preparing your journey...
+              Discovering categories...
             </span>
           </div>
           <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-20 h-4 bg-gradient-to-t from-background to-transparent" />
@@ -67,15 +67,15 @@ export default function Loading() {
           className="space-y-2 animate-fade-in transition-all duration-500"
         >
           <p className="text-2xl font-serif italic text-muted-foreground">
-            "{inspirationalQuotes[currentQuote].quote}"
+            "{categoryQuotes[currentQuote].quote}"
           </p>
           <p className="text-sm text-muted-foreground">
-            — {inspirationalQuotes[currentQuote].author}
+            — {categoryQuotes[currentQuote].author}
           </p>
         </div>
 
         <div className="flex justify-center gap-1.5 mt-8">
-          {inspirationalQuotes.map((_, index) => (
+          {categoryQuotes.map((_, index) => (
             <div
               key={index}
               className={`h-1.5 rounded-full transition-all duration-300 ${
