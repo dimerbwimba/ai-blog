@@ -20,7 +20,7 @@ async function getCategories(): Promise<Category[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/categories/public`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 60 } }
     );
 
     if (!res.ok) {

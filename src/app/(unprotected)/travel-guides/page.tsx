@@ -60,7 +60,7 @@ async function getTravelGuides(page: number): Promise<TravelGuidesResponse> {
       `${process.env.NEXT_PUBLIC_APP_URL}/api/posts/travel-guides?page=${page}&limit=10`,
       {
         next: {
-          revalidate: 600,
+          revalidate: 60,
         },
       }
     );

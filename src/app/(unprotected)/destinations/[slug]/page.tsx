@@ -19,7 +19,12 @@ export async function generateMetadata({
   const {slug} = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/destinations/public/${slug}`
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/destinations/public/${slug}`,
+      {
+        next: {
+          revalidate: 60
+        }
+      }
     );
     const destination = await response.json();
 

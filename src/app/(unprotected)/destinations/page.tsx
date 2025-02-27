@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: process.env.DOMAIN_URL + "/destinations",
+    canonical: process.env.NEXT_PUBLIC_APP_URL + "/destinations",
   },
-  authors: [{ name: "Travel Kaya", url: process.env.DOMAIN_URL + "/about" }],
+  authors: [{ name: "Travel Kaya", url: process.env.NEXT_PUBLIC_APP_URL + "/about" }],
   category: "Travel",
   verification: {
     google: "your-google-verification-code",
