@@ -68,13 +68,17 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const {slug} = await params
+export default async function TravelPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params
   const post = await getPost(slug)
-
+  
   if (!post) {
     return <NotFound /> 
   }
 
-  return <BlogPost post={post} />
+  return (
+    <article>
+      <BlogPost post={post} />
+    </article>
+  )
 } 

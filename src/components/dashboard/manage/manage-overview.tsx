@@ -10,7 +10,8 @@ import {
   Settings, 
   Tag,
   ArrowRight,
-  Hotel
+  Hotel,
+  Mail
 } from "lucide-react"
 import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
@@ -43,6 +44,13 @@ const managementCards = [
     icon: Hotel,
     href: "/dashboard/manage/accommodations",
     color: "text-orange-500",
+  },
+  {
+    title: "Newsletter",
+    description: "Manage newsletter subscribers",
+    icon: Mail,
+    href: "/dashboard/manage/newsletter",
+    color: "text-blue-500",
   },
   {
     title: "Analytics",

@@ -300,7 +300,6 @@ export const PostService = {
       throw new Error(error instanceof Error ? error.message : "Failed to publish post")
     }
   },
-
   async getPublicPostBySlug(slug: string) {
     try {
       const post = await prisma.post.findFirst({
@@ -344,12 +343,17 @@ export const PostService = {
                   slug: true
                 }
               }
-            }
+            },
           },
           faqs: {
             select: {
               question: true,
               answer: true
+            }
+          },
+          views: {
+            select: {
+              id: true
             }
           }
         }
@@ -371,8 +375,8 @@ export const PostService = {
         categories: post.categories.map(c => ({
           name: c.category.name,
           slug: c.category.slug
-        }))
-        
+        })),
+        views: post.views.length
       }
     } catch (error) {
       console.error("[GET_PUBLIC_POST_ERROR]", error)
@@ -521,6 +525,39 @@ export const PostService = {
     } catch (error) {
       console.error("[GET_PUBLIC_TRAVEL_GUIDES_ERROR]", error);
       throw error;
+    }
+  },
+
+  async getLatestPosts(limit: number = 3) {
+    try {
+      const posts = await prisma.post.findMany({
+        where: {
+          status: "APPROVED",
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: limit,
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          seo_slug: true,
+          image: true,
+          createdAt: true,
+        }
+      })
+
+      return {
+        success: true,
+        data: posts
+      }
+    } catch (error) {
+      console.error('[GET_LATEST_POSTS_ERROR]', error)
+      return {
+        success: false,
+        error: 'Failed to fetch latest posts'
+      }
     }
   }
 } 

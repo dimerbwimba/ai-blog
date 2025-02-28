@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { Hotel, ScrapingRequest } from '@/types/hotel'
+import { ScrapingRequest } from '@/types/hotel'
 import { HotelScraper } from '@/lib/scrapers/hotel-scraper'
 
 export const HotelService = {

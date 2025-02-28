@@ -101,6 +101,8 @@ model Post {
   destinations      DestinationOnPosts[]
   comments          Comment[]
   faqs              FAQ[]
+  views             View[]
+  viewCount         Int                  @default(0)
 }
 
 model Destination {
@@ -115,7 +117,7 @@ model Destination {
   country_slug   String?
   continent_slug String?
   region_slug    String?
-  accommodations  Accommodation[]
+  accommodations Accommodation[]
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   posts          DestinationOnPosts[]
@@ -174,21 +176,67 @@ model FAQ {
 }
 
 model Accommodation {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String
-  image       String
-  rating      Float
-  type        String
-  price       Json
-  destination Destination @relation(fields: [destinationId], references: [id])
-  destinationId String @db.ObjectId
-  amenities   String[]
-  roomTypes   Json
-  source      String
-  sourceUrl   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String
+  image         String
+  rating        Float
+  type          String
+  price         Json
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId String      @db.ObjectId
+  amenities     String[]
+  roomTypes     Json
+  source        String
+  sourceUrl     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([source])
+}
+
+model Newsletter {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  email          String           @unique
+  name           String?
+  status         NewsletterStatus @default(ACTIVE)
+  source         String? // Where the subscription came from (e.g., "floating-notification", "footer", etc.)
+  ipAddress      String? // For compliance and tracking
+  verified       Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  // Tracking fields
+  lastEmailSent  DateTime?
+  unsubscribedAt DateTime?
+  // Optional preferences
+  preferences    Json? // Store user preferences as JSON (e.g., frequency, categories of interest)
+
+  @@map("newsletters")
+}
+
+enum NewsletterStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+  COMPLAINED
+  PENDING
+}
+
+model View {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  post      Post     @relation(fields: [postId], references: [id])
+  ip        String   // For unique view counting
+  userAgent String?  // For analytics
+  referer   String?  // Track traffic sources
+  country   String?  // Geolocation data
+  city      String?  // Geolocation data
+  createdAt DateTime @default(now())
+
+  // Compound index for unique views per post per IP within a time window
+  @@unique([postId, ip], name: "unique_view_per_ip")
+  // Index for analytics queries
+  @@index([postId, createdAt])
+  @@index([country])
+  @@map("views")
 }
