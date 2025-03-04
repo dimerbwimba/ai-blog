@@ -36,7 +36,6 @@ export default async function AccommodationsPage() {
           Browse through our curated list of accommodations across various destinations.
         </p>
       </div>
-      
       <PaginatedAccommodations />
     </div>
   )
