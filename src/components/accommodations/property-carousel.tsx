@@ -2,7 +2,6 @@
 
 import { useCallback } from "react"
 import useEmblaCarousel from "embla-carousel-react"
-import AutoPlay from "embla-carousel-autoplay"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { PropertyCard } from "./property-card"
@@ -15,7 +14,7 @@ interface PropertyCarouselProps {
 export function PropertyCarousel({ properties }: PropertyCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
-    loop: true,
+    loop: false,
     skipSnaps: false,
     dragFree: true,
     containScroll: "trimSnaps",
@@ -23,7 +22,7 @@ export function PropertyCarousel({ properties }: PropertyCarouselProps) {
       "(min-width: 640px)": { slidesToScroll: 2 },
       "(min-width: 1024px)": { slidesToScroll: 2 }
     }
-  }, [AutoPlay({ delay: 5000, stopOnInteraction: true })])
+  })
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PropertyCard } from "./property-card";
 import { AccommodationsMap } from "../map/accommodations-map";
@@ -18,7 +18,7 @@ interface PaginatedData {
   };
 }
 
-export function PaginatedAccommodations() {
+function AccommodationsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -80,15 +80,14 @@ export function PaginatedAccommodations() {
             <h3 className="text-lg py-4 font-bold">
               Map of {accommodation.name} | Find the Best Accommodations Nearby
             </h3>
-            {data && <AccommodationsMap accommodations={accommodation} />}
+            {accommodation.properties.length > 0 && (
+              <AccommodationsMap accommodations={accommodation} />
+            )}
             <div className="grid gap-6 pt-6 sm:grid-cols-2 lg:grid-cols-2">
               {accommodation.properties.map((property: any) => (
                 <PropertyCard
                   key={property.name}
-                  property={{
-                    name: property.name,
-                    ...property,
-                  }}
+                  property={property}
                 />
               ))}
             </div>
@@ -125,5 +124,13 @@ export function PaginatedAccommodations() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export function PaginatedAccommodations() {
+  return (
+    <Suspense fallback={<div>Loading accommodations...</div>}>
+      <AccommodationsContent />
+    </Suspense>
   );
 }
