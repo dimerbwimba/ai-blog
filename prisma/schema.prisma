@@ -176,23 +176,15 @@ model FAQ {
 }
 
 model Accommodation {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  description   String
-  image         String
-  rating        Float
-  type          String
-  price         Json
-  destination   Destination @relation(fields: [destinationId], references: [id])
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  jsonData    Json        // This will store all accommodation data
   destinationId String      @db.ObjectId
-  amenities     String[]
-  roomTypes     Json
-  source        String
-  sourceUrl     String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  destination Destination @relation(fields: [destinationId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
-  @@index([source])
+  @@index([destinationId])
+  @@map("accommodations")
 }
 
 model Newsletter {

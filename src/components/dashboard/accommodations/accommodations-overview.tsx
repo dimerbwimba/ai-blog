@@ -1,85 +1,53 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { AccommodationForm } from "./accommodation-form"
+import { AccommodationsList } from "./accommodations-list"
 import { Button } from "@/components/ui/button"
-import { HotelList } from "./hotel-list"
-import { ScrapingForm } from "./scraping-form"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
+import { Plus } from "lucide-react"
+import { toast } from "sonner"
 
 export function AccommodationsOverview() {
-  const [isScrapingDialogOpen, setIsScrapingDialogOpen] = useState(false)
-  const [showCompletionDialog, setShowCompletionDialog] = useState(false)
+  const [showForm, setShowForm] = useState(false)
+  const [accommodations, setAccommodations] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const handleScrapingComplete = () => {
-    setShowCompletionDialog(true)
-    setIsScrapingDialogOpen(false)
-  }
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      try {
+        const response = await fetch('/api/accommodations')
+        const data = await response.json()
+        setAccommodations(data)
+      } catch (error) {
+        console.error('Error fetching accommodations:', error)
+        toast.error('Failed to load accommodations')
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const handleStartNewScrape = () => {
-    setShowCompletionDialog(false)
-    setIsScrapingDialogOpen(true)
+    fetchAccommodations()
+  }, [])
+
+  if (loading) {
+    return <div className="text-center py-10">Loading...</div>
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Accommodations</h2>
-          <p className="text-muted-foreground">
-            Manage and view scraped accommodation data
-          </p>
-        </div>
-        <Dialog 
-          open={isScrapingDialogOpen} 
-          onOpenChange={setIsScrapingDialogOpen}
-        >
-          <DialogTrigger asChild>
-            <Button>Scrape Hotels</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[900px] h-screen">
-            <DialogHeader>
-              <DialogTitle>Scrape Hotel Data</DialogTitle>
-              <DialogDescription>
-                Configure and start the scraping process for hotel data
-              </DialogDescription>
-            </DialogHeader>
-            <ScrapingForm onSuccess={handleScrapingComplete} />
-          </DialogContent>
-        </Dialog>
-
-        {/* Completion Dialog */}
-        <Dialog 
-          open={showCompletionDialog} 
-          onOpenChange={setShowCompletionDialog}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Scraping Complete</DialogTitle>
-              <DialogDescription>
-                The hotel data has been successfully scraped and saved.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowCompletionDialog(false)}>
-                Close
-              </Button>
-              <Button onClick={handleStartNewScrape}>
-                Start New Scrape
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">Accommodations</h2>
+        <Button onClick={() => setShowForm(!showForm)}>
+          <Plus className="mr-2 h-4 w-4" />
+          {showForm ? 'Cancel' : 'Add Accommodation'}
+        </Button>
       </div>
 
-      <HotelList />
+      {showForm ? (
+        <AccommodationForm />
+      ) : (
+        <AccommodationsList accommodations={accommodations} />
+      )}
     </div>
   )
 } 

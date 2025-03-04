@@ -8,7 +8,7 @@ const footerLinks = {
     { label: "Travel Guides", href: "/travel-guides", icon: <BookOpen className="h-4 w-4" /> },
   ],
   resources: [
-    { label: "Categories", href: "/category", icon: <FolderOpen className="h-4 w-4" /> },
+    { label: "Accommodations", href: "/accommodations", icon: <MapPin className="h-4 w-4" /> },
     { label: "Destinations", href: "/destinations", icon: <MapPin className="h-4 w-4" /> },
     { label: "Latest Posts", href: "/latest", icon: <Clock className="h-4 w-4" /> },
   ],
