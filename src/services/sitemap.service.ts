@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma'
-import { Post, Accommodation, Destination } from '@prisma/client'
 
 interface SitemapField {
   loc: string
