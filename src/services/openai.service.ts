@@ -79,6 +79,40 @@ export const OpenAIService = {
             - Accurately represent the content
             - Use active voice
             - Include a clear value proposition
+            Guidelines:
+            - Gets straight to the point
+            - Hook the Reader
+            - Show Relevance
+            - Establish Credibility
+            - State the Purpose
+            - Engage with SEO
+            - Invoke Emotion or Curiosity
+            - Promise Value
+            - Write in a professional but engaging tone
+            - Pull quotes and highlights
+            - Add Relevant Tables
+            - Relevant external links to authoritative sources
+            - Images from research placed contextually with alt text. with a source link
+            - Include relevant examples and explanations
+            - Make sure the content flows naturally between subsections
+            - Format the content with proper HTML tags
+            - Keep each subsection focused and concise
+            - Include transition sentences between subsections
+            - Improved readability 
+            - Increased engagement
+            - Attention-grabbing
+            - Quick information retrieval
+            - Increased retention
+            - Emphasized important information
+            - Use numbers
+            - Ask questions
+            - Use power words
+            - Include keywords
+            - Create a sense of urgency
+            - Make it concise and clear
+            - Use emotional triggers
+            - Use strong adjectives
+            - Make it unique
             Each description should be different in structure and appeal`,
           },
         ],
@@ -190,7 +224,6 @@ export const OpenAIService = {
         response_format: { type: "json_object" },
         max_tokens: 512,
       });
-
       const content = response.choices[0].message.content;
       if (!content) throw new Error("No tags generated");
 
@@ -205,7 +238,6 @@ export const OpenAIService = {
         keywords: result.keywords.map((keyword: string) => keyword.toLowerCase()),
       };
     } catch (error) {
-      console.error("[OPENAI_GENERATE_TAGS_ERROR]", error);
       throw new Error("Failed to generate tags and keywords");
     }
   },
@@ -480,7 +512,7 @@ export const OpenAIService = {
       params.context.title+":"+ params.title ,
     )
     const prompt = `
-      Write a detailed section for a blog post about "${params.context.title}".
+      Write a Gets straight to the point section for a blog post about "${params.context.title}".
       
       This section's title is: "${params.title}"
       Base yourself of these Research data:
@@ -495,19 +527,42 @@ export const OpenAIService = {
       - Main post title: ${params.context.title}
       - Post description: ${params.context.description}
       - Keywords to include: ${params.context.keywords.join(', ')}
+      - remember this is just a section of a bigger article
       
       Guidelines:
+      - Gets straight to the point
+      - Hook the Reader
+      - Show Relevance
+      - Establish Credibility
+      - State the Purpose
+      - Engage with SEO
+      - Invoke Emotion or Curiosity
+      - Promise Value
       - Write in a professional but engaging tone
       - Pull quotes and highlights
-      - Mobile-friendly formatting
-      - Add Relevant Table
+      - Add Relevant Tables
       - Relevant external links to authoritative sources
-      - Images from research placed contextually with alt text
+      - Images from research placed contextually with alt text. with a source link
       - Include relevant examples and explanations
       - Make sure the content flows naturally between subsections
       - Format the content with proper HTML tags
       - Keep each subsection focused and concise
       - Include transition sentences between subsections
+      - Improved readability 
+      - Increased engagement
+      - Attention-grabbing
+      - Quick information retrieval
+      - Increased retention
+      - Emphasized important information
+      - Use numbers
+      - Ask questions
+      - Use power words
+      - Include keywords
+      - Create a sense of urgency
+      - Make it concise and clear
+      - Use emotional triggers
+      - Use strong adjectives
+      - Make it unique
 
       
       Return only the HTML content without any additional formatting or metadata.
@@ -544,7 +599,7 @@ export const OpenAIService = {
       - Title: ${params.title}
       - Description: ${params.description}
       - Keywords: ${params.keywords.join(', ')}
-      - Content: ${params.content}
+      - content: ${params.content}
       
       Guidelines:
       - Generate 5-8 relevant and insightful questions

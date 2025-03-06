@@ -14,24 +14,28 @@ import {
 } from "@/components/ui/dialog"
 
 interface OutlineSection {
-  h2: string
-  h3: string[]
+  h2: string;
+  content?: string;
+  h3?: string[];
 }
 
 interface ContentStepProps {
-  onContentGenerated: (sections: OutlineSection[]) => void
-  onBack: () => void
+  onContentGenerated: (data: {
+    sections: { h2: string; content: string }[];
+    content: string;
+  }) => void;
+  onBack: () => void;
   initialData: {
-    title: string
-    description: string
-    keywords: string[]
-    outline: OutlineSection[]
-  }
+    title: string;
+    description: string;
+    keywords: string[];
+    outline: OutlineSection[];
+  };
 }
 
 interface SectionContent extends OutlineSection {
-  content?: string
-  isGenerating?: boolean
+  content?: string;
+  isGenerating?: boolean;
 }
 
 export function ContentStep({
@@ -63,7 +67,7 @@ export function ContentStep({
       const section = sections[sectionIndex]
       const content = await generateSectionContent({
         title: section.h2,
-        subsections: section.h3,
+        subsections: section.h3 || [],
         context: {
           title: initialData.title,
           description: initialData.description,
@@ -102,7 +106,17 @@ export function ContentStep({
       toast.error("Please generate content for all sections")
       return
     }
-    onContentGenerated(sections)
+
+    // Compile all content into one string
+    const fullContent = sections.map(section => `
+      <h2>${section.h2}</h2>
+      ${section.content || ''}
+    `).join('\n\n')
+
+    onContentGenerated({
+      sections: sections.map(section => ({ h2: section.h2, content: section.content || '' })),
+      content: fullContent // Pass both sections and compiled content
+    })
   }
 
   const allContentGenerated = sections.every(section => section.content)
@@ -171,7 +185,7 @@ export function ContentStep({
 
                 {expandedSections.includes(section.h2) && (
                   <div className="ml-6 space-y-2">
-                    {section.h3.map((subsection) => (
+                    {section.h3?.map((subsection) => (
                       <div key={subsection} className="text-sm text-muted-foreground">
                         • {subsection}
                       </div>

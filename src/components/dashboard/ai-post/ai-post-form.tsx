@@ -225,19 +225,23 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
     updateFormData({ currentStep: 4 })
   }
 
-  const handleContentGenerated = (outline: any[]) => {
+  const handleContentGenerated = (data: { 
+    sections: { h2: string; content: string }[]; 
+    content: string 
+  }) => {
     updateFormData({
-      outline,
+      sections: data.sections,
+      content: data.content,
       currentStep: 7
     })
   }
 
   const handleBackToOutline = () => {
-    updateFormData({ currentStep: 5 })
+    updateFormData({ currentStep: 6 })
   }
 
   const handleBackToContent = () => {
-    updateFormData({ currentStep: 6 })
+    updateFormData({ currentStep: 7 })
   }
 
   const handleFAQsGenerate = async (data: {
@@ -276,9 +280,9 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
     })
   }
 
-  // const handleBackToFAQs = () => {
-  //   updateFormData({ currentStep: 7 })
-  // }
+  const handleBackToFAQs = () => {
+    updateFormData({ currentStep: 7 })
+  }
 
   return (
     <div className="space-y-8">
@@ -399,10 +403,10 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
           onContentGenerated={handleContentGenerated}
           onBack={handleBackToOutline}
           initialData={{
-            title: formData.title || '',
-            description: formData.description || '',
-            keywords: formData.keywords || [],
-            outline: formData.outline as OutlineSection[]
+            title: formData.title,
+            description: formData.description,
+            keywords: formData.keywords,
+            outline: formData.outline
           }}
         />
       )}
@@ -425,7 +429,7 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
 
       {formData.currentStep === 8 && (
         <EndStep
-          onBack={handleBackToContent}
+          onBack={handleBackToFAQs}
           onSuccess={onSuccess}
           initialData={{
             title: formData.title || '',
@@ -434,10 +438,8 @@ export function AIPostForm({ onSuccess }: AIPostFormProps) {
             seoSlug: formData.seoSlug || '',
             tags: formData.tags || [],
             keywords: formData.keywords || [],
-            outline: formData.outline.map((section: any) => ({
-              ...section,
-              content: formData.sections?.find((s: any) => s.h2 === section.h2)?.content
-            })),
+            outline: formData.outline,
+            content: formData.content,
             faqs: formData.faqs || []
           }}
         />

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { ArrowLeft, Loader2, Save, Eye } from "lucide-react"
+import { ArrowLeft, Loader2, Save, Eye, ChevronDown } from "lucide-react"
 import { toast } from "sonner"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -51,6 +51,7 @@ interface EndStepProps {
     seoSlug: string
     tags: string[]
     keywords: string[]
+    content: string
     outline: {
       h2: string
       h3: string[]
@@ -121,9 +122,9 @@ export function EndStep({
       // Compile all content into HTML
       const content = initialData.outline.map(section => `
         <h2>${section.h2}</h2>
-        ${section.content || ''}
+        ${initialData.content || ''}
       `).join('')
-
+        
       // Add FAQs section if exists
       const faqsSection = initialData.faqs.length > 0 ? `
         <h2>Frequently Asked Questions</h2>
@@ -143,7 +144,7 @@ export function EndStep({
         image:"https://theroostingplace.blog/wp-content/uploads/2020/12/qi-bin-w4hbafegiac-unsplash.jpg",
         title: initialData.title,
         description: initialData.description,
-        content: fullContent,
+        content: initialData.content,
         slug: initialData.slug,
         seoSlug: initialData.seoSlug,
         tags: initialData.tags,
@@ -262,12 +263,7 @@ export function EndStep({
               <AccordionContent>
                 <ScrollArea className="h-[400px] rounded-md border p-4">
                   <div className="prose prose-stone dark:prose-invert max-w-none">
-                    {initialData.outline.map((section, index) => (
-                      <div key={index} className="mb-6">
-                        <h2>{section.h2}</h2>
-                        <div dangerouslySetInnerHTML={{ __html: section.content || '' }} />
-                      </div>
-                    ))}
+                    <div dangerouslySetInnerHTML={{ __html: initialData.content || '' }} />
                   </div>
                 </ScrollArea>
               </AccordionContent>

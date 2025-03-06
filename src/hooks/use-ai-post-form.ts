@@ -24,6 +24,7 @@ interface AIPostFormData {
     h2: string
     content: string
   }>
+  sectionContents: Record<string, string>
 }
 
 export interface OutlineSection {
@@ -52,10 +53,23 @@ export function useAIPostForm(initialData?: Partial<AIPostFormData>) {
   }, [formData])
 
   const updateFormData = (updates: Partial<AIPostFormData>) => {
-    setFormData(prev => ({
-      ...prev,
-      ...updates
-    }))
+    setFormData(prev => {
+      if (updates.sections) {
+        const newSectionContents = { ...prev.sectionContents }
+        updates.sections.forEach(section => {
+          if (section.content) {
+            newSectionContents[section.h2] = section.content
+          }
+        })
+        return {
+          ...prev,
+          ...updates,
+          sectionContents: newSectionContents,
+          content: Object.values(newSectionContents).join('\n\n')
+        }
+      }
+      return { ...prev, ...updates }
+    })
   }
 
   const clearFormData = () => {
@@ -92,6 +106,7 @@ function getInitialState(initialData?: Partial<AIPostFormData>): AIPostFormData 
     suggestedKeywords: [],
     suggestedOutline: [],
     sections: [],
+    sectionContents: {},
     ...initialData
   }
 } 

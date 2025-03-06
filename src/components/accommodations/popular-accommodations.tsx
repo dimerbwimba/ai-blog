@@ -25,6 +25,7 @@ export function PopularAccommodations() {
     fetchAccommodations();
   }, []);
 
+
   if (loading) {
     return (
       <div className="py-10 space-y-6">
@@ -42,7 +43,7 @@ export function PopularAccommodations() {
 
   return (
     <div className="py-10 space-y-8">
-      {accommodations.map((accommodation) => (
+      {accommodations?.map((accommodation) => (
         <div key={accommodation.id} className="space-y-4">
           <h2 className="text-2xl font-bold">
             Best Accommodations in {accommodation.name}
