@@ -60,10 +60,10 @@ export default function PrivacyPage() {
               <section id="introduction">
                 <h2 className="text-2xl font-semibold">Introduction</h2>
                 <p>
-                  Welcome to TravelKaya's Privacy Policy. Your privacy is critically important to us. This Privacy Policy document contains types of information that is collected and recorded by our Travel Blog and how we use it. By using our services, you agree to the collection and use of information in accordance with this policy.
+                  Welcome to EPICDESTINATION's Privacy Policy. Your privacy is critically important to us. This Privacy Policy document contains types of information that is collected and recorded by our Travel Blog and how we use it. By using our services, you agree to the collection and use of information in accordance with this policy.
                 </p>
                 <p className="text-muted-foreground">
-                  This policy applies to all services offered by TravelKaya, including our website, mobile applications, and related services.
+                  This policy applies to all services offered by EPICDESTINATION, including our website, mobile applications, and related services.
                 </p>
               </section>
 

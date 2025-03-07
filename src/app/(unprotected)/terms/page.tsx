@@ -50,7 +50,7 @@ export default function TermsPage() {
               <section id="introduction">
                 <h2 className="text-2xl font-semibold">Introduction</h2>
                 <p>
-                  Welcome to TravelKaya. These Terms of Service govern your use of our website, services, and content. 
+                  Welcome to EPICDESTINATION. These Terms of Service govern your use of our website, services, and content. 
                   By accessing or using our services, you agree to be bound by these terms.
                 </p>
               </section>
@@ -97,8 +97,8 @@ export default function TermsPage() {
               <section id="intellectual">
                 <h2 className="text-2xl font-semibold">Intellectual Property</h2>
                 <p>
-                  All content, features, and functionality of our services are owned by TravelKaya and are protected by copyright, 
-                  trademark, and other intellectual property laws.
+                  All content, features, and functionality of our services are owned by Intellectual and are protected by copyright, 
+                  trademark, and other EPICDESTINATIONS property laws.
                 </p>
               </section>
 

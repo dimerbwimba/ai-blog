@@ -40,7 +40,7 @@ const Navbar = () => {
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <span className="hidden font-bold sm:inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-              ✈️ TravelKaya
+              ✈️ EPIC-DESTINATIONS
             </span>
           </Link>
           <Separator orientation="vertical" className="h-6" />
