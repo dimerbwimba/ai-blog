@@ -7,11 +7,11 @@ import { PopularDestinations } from "@/components/blog/popular-destinations"
 import { PopularAccommodations } from "@/components/accommodations/popular-accommodations"
 
 export const metadata: Metadata = {
-  title: "Travel Stories & Guides | TravelKaya",
+  title: "Travel Stories & Guides | Epic Destinations",
   description: "Discover travel stories, guides, and tips from experienced travelers around the world.",
   keywords: ["travel blog", "travel guides", "travel stories", "travel tips", "destination guides"],
   openGraph: {
-    title: "Travel Stories & Guides | TravelKaya",
+    title: "Travel Stories & Guides | Epic Destinations",
     description: "Discover travel stories, guides, and tips from experienced travelers around the world.",
     type: "website",
     url: process.env.NEXT_PUBLIC_APP_URL,

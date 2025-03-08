@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { Hotel } from "@/types/hotel";
 import { TavilyService } from "./tavily.service";
 import { slugify } from "@/lib/utils";
+import { SitemapService } from "./sitemap.service";
 // import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
 // import { AzureKeyCredential } from "@azure/core-auth";
 
@@ -511,6 +512,10 @@ export const OpenAIService = {
     const research = await TavilyService.researchTopic(
       params.context.title+":"+ params.title ,
     )
+    const internalLinkData = await SitemapService.getBlogPosts(process.env.NEXT_PUBLIC_SITE_URL || '')
+    const internalLinks = internalLinkData.map(post => ({
+      seo_slug: post.loc
+    }))
     const prompt = `
       Write a Gets straight to the point section for a blog post about "${params.context.title}".
       
@@ -528,6 +533,7 @@ export const OpenAIService = {
       - Post description: ${params.context.description}
       - Keywords to include: ${params.context.keywords.join(', ')}
       - remember this is just a section of a bigger article
+      - Internal links to related content user this links: ${internalLinks.map(link => `https://www.epicdestinations.blog/travel/${link.seo_slug}`).join('\n')}
       
       Guidelines:
       - Gets straight to the point
