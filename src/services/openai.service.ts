@@ -4,18 +4,18 @@ import { Hotel } from "@/types/hotel";
 import { TavilyService } from "./tavily.service";
 import { slugify } from "@/lib/utils";
 import { SitemapService } from "./sitemap.service";
-// import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-// import { AzureKeyCredential } from "@azure/core-auth";
+import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
+import { AzureKeyCredential } from "@azure/core-auth";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.AI_BASE_URL,
 });
 
-// const client = ModelClient(
-//   "https://models.github.ai/inference",
-//   new AzureKeyCredential(process.env.OPENAI_API_KEY || "")
-// );
+const client = ModelClient(
+  "https://models.inference.ai.azure.com",
+  new AzureKeyCredential(process.env.OPENAI_API_KEY || "")
+);
 
 export const OpenAIService = {
   async generateTitles(topic: string): Promise<string[]> {
@@ -514,7 +514,7 @@ export const OpenAIService = {
     )
     const internalLinkData = await SitemapService.getBlogPosts(process.env.NEXT_PUBLIC_SITE_URL || '')
     const internalLinks = internalLinkData.map(post => ({
-      seo_slug: post.loc
+      loc: post.loc
     }))
     const prompt = `
       Write a Gets straight to the point section for a blog post about "${params.context.title}".
@@ -532,11 +532,15 @@ export const OpenAIService = {
       - Main post title: ${params.context.title}
       - Post description: ${params.context.description}
       - Keywords to include: ${params.context.keywords.join(', ')}
-      - remember this is just a section of a bigger article
-      - Internal links to related content user this links: ${internalLinks.map(link => `https://www.epicdestinations.blog/travel/${link.seo_slug}`).join('\n')}
+      - Internal links to related content user this links(Note: take only what you see in the links don't envent other non existant links ): ${internalLinks.map(link => `${link.loc}`).join('\n')}
       
       Guidelines:
+      - remember this is just a section of a bigger article
       - Gets straight to the point
+      - Write in a professional but engaging tone
+      - Add Relevant Tables
+      - Make it unique
+      - Relevant external links to authoritative sources
       - Hook the Reader
       - Show Relevance
       - Establish Credibility
@@ -544,14 +548,11 @@ export const OpenAIService = {
       - Engage with SEO
       - Invoke Emotion or Curiosity
       - Promise Value
-      - Write in a professional but engaging tone
       - Pull quotes and highlights
-      - Add Relevant Tables
-      - Relevant external links to authoritative sources
       - Images from research placed contextually with alt text. with a source link
       - Include relevant examples and explanations
       - Make sure the content flows naturally between subsections
-      - Format the content with proper HTML tags
+      - Format the content with proper HTML tags and add colores style to specific sections
       - Keep each subsection focused and concise
       - Include transition sentences between subsections
       - Improved readability 
@@ -568,29 +569,43 @@ export const OpenAIService = {
       - Make it concise and clear
       - Use emotional triggers
       - Use strong adjectives
-      - Make it unique
 
       
       Return only the HTML content without any additional formatting or metadata.
     `
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert content writer specializing in travel blog posts. You write engaging, informative content with proper HTML formatting."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000
-    })
+    // const response = await openai.chat.completions.create({
+    //   model: "gpt-4o",
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content: "You are an expert content writer specializing in travel blog posts. You write engaging, informative content with proper HTML formatting."
+    //     },
+    //     {
+    //       role: "user",
+    //       content: prompt
+    //     }
+    //   ],
+    //   temperature: 0.7,
+    //   max_tokens: 2000
+    // })
+    const response = await client.path("/chat/completions").post({
+      body: {
+          messages: [
+              { role: "system", content: "You are an expert content writer specializing in travel blog posts. You write engaging, informative content with proper HTML formatting." },
+              { role: "user", content: prompt }
+          ],
+          model: "DeepSeek-V3",
+          temperature: 0.8,
+          max_tokens: 2048,
+          top_p: 0.1
+      }
+  });
+  if (isUnexpected(response)) {
+    throw response.body.error;
+}
 
-    return response.choices[0].message.content || ''
+    return response.body.choices[0].message.content || ''
   },
   async generateFAQs(params: {
     title: string
