@@ -1,4 +1,5 @@
 // import { Metadata } from "next"
+import { Metadata } from "next"
 import { AccommodationService } from "@/services/accommodation.service"
 import { PaginatedAccommodations } from "@/components/accommodations/paginated-accommodations"
 
