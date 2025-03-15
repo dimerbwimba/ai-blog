@@ -9,17 +9,18 @@ interface PageProps {
 
 // Generate metadata for SEO
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const page = parseInt(searchParams.page || '1')
+  const {page } = await searchParams
+  const p = parseInt(page || '1')
   
   return {
-    title: page === 1 
+    title: p === 1 
       ? "All Accommodations" 
-      : `Accommodations - Page ${page}`,
+      : `Accommodations - Page ${p}`,
     description: "Browse through our curated list of accommodations across various destinations.",
     openGraph: {
-      title: page === 1 
+      title: p === 1 
         ? "All Accommodations" 
-        : `Accommodations - Page ${page}`,
+        : `Accommodations - Page ${p}`,
       description: "Browse through our curated list of accommodations across various destinations.",
     }
   }
