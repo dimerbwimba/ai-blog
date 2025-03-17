@@ -59,7 +59,6 @@ export default async function HomePage() {
         <div className="max-w-2xl mx-auto">
           <Separator className="my-8" />
           <PopularDestinations />
-          <PopularAccommodations />
           <Separator className="my-8" />
           
           {error ? (

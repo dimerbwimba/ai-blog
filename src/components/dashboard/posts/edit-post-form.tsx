@@ -49,7 +49,7 @@ export function EditPostForm({ id }: EditPostFormProps) {
             initialData={{
                 title: post.title,
                 content: post.content,
-                slug: post.slug,
+                slug: post.seo_slug,
                 description: post.description,
                 image: post.image,
                 status: post.status,
