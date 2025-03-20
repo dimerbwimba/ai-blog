@@ -2,32 +2,17 @@
 
 import { useState } from "react"
 import { formatDate } from "@/lib/utils"
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { 
   Calendar, 
   MapPin, 
   Globe, 
-  Lock, 
-  MoreVertical, 
+  Lock,
   Edit, 
   Trash2, 
   Eye 
 } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 import { ItineraryEditDialog } from "./itinerary-edit-dialog"
+import { useItineraryStore } from "@/store/use-itinerary-store"
 
 interface ItineraryListProps {
   itineraries: any[]
@@ -51,6 +37,7 @@ interface ItineraryListProps {
 export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryListProps) {
   const [editingItinerary, setEditingItinerary] = useState<any>(null)
   const [showEditDialog, setShowEditDialog] = useState(false)
+  const { openDetails } = useItineraryStore()
 
   const handleDelete = async (id: string) => {
     try {
@@ -80,56 +67,18 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
   return (
     <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
       {itineraries.map((itinerary) => (
-        <Card key={itinerary.id} className="overflow-hidden">
-          <CardHeader className="pb-3">
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-lg">{itinerary.title}</CardTitle>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
-                    <span className="sr-only">Actions</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleEdit(itinerary)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit
-                  </DropdownMenuItem>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This will permanently delete this itinerary and all its data.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => handleDelete(itinerary.id)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </DropdownMenuContent>
-              </DropdownMenu>
+        <div key={itinerary.id} className="border border-border rounded-lg p-6 space-y-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-semibold">{itinerary.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                {itinerary.description || "No description provided"}
+              </p>
             </div>
-            <CardDescription>
-              {itinerary.description || "No description provided"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-2">
-            <div className="flex items-center text-sm text-muted-foreground mb-2">
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center text-sm text-muted-foreground">
               <Calendar className="mr-1 h-4 w-4" />
               <span>
                 {formatDate(itinerary.startDate)} - {formatDate(itinerary.endDate)}
@@ -137,7 +86,7 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
             </div>
             
             {itinerary.destinations && itinerary.destinations.length > 0 && (
-              <div className="flex items-center text-sm text-muted-foreground mb-2">
+              <div className="flex items-center text-sm text-muted-foreground">
                 <MapPin className="mr-1 h-4 w-4" />
                 <span>
                   {itinerary.destinations.length} destination{itinerary.destinations.length !== 1 ? 's' : ''}
@@ -145,7 +94,7 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
               </div>
             )}
             
-            <div className="mt-3">
+            <div>
               <Badge variant={itinerary.isPublic ? "default" : "outline"}>
                 {itinerary.isPublic ? (
                   <>
@@ -160,14 +109,46 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
                 )}
               </Badge>
             </div>
-          </CardContent>
-          <CardFooter className="pt-2">
-            <Button variant="outline" size="sm" className="w-full">
+          </div>
+
+          <div className=" grid grid-cols-3 gap-2">
+            <Button onClick={() => openDetails()} variant="outline" size="sm" className="w-full">
               <Eye className="mr-2 h-4 w-4" />
               View Details
             </Button>
-          </CardFooter>
-        </Card>
+
+            <Button variant="outline" size="sm" className="w-full" onClick={() => handleEdit(itinerary)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="w-full">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete this itinerary and all its data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => handleDelete(itinerary.id)}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
       ))}
 
       {editingItinerary && (
@@ -180,4 +161,4 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
       )}
     </div>
   )
-} 
+}

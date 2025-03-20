@@ -535,6 +535,12 @@ export const OpenAIService = {
       - Internal links to related content user this links(Note: take only what you see in the links don't envent other non existant links ): ${internalLinks.map(link => `${link.loc}`).join('\n')}
       
       Guidelines:
+      - Gets straight to the point
+      - Use first-person pronouns and active voice to make the content more engaging and relatable.
+      - Add some humor and personality to this AI-generated content. Make it feel like it was written by a real person
+      - Imagine you're explaining this topic to a friend. Write it as if you're having a casual conversation
+      - Sound more natural and human, avoiding overly complex words and phrases.
+      - Use familiar, conversational phrases and add a simple analogy or example.
       - remember this is just a section of a bigger article
       - Gets straight to the point
       - Write in a professional but engaging tone

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Paris",
+    "country": "France",
+    "countryCode": "FR",
+    "region": "Île-de-France"
+  },
+  {
+    "name": "London",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "region": "England"
+  }
+  
+] 

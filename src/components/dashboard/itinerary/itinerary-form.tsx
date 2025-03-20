@@ -18,15 +18,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { addDays } from "date-fns"
 import { useRouter } from "next/navigation"
+import { Combobox } from "@/components/ui/combobox"
+import { CitiesService, type City } from "@/services/cities.service"
+import { useDebouncedCallback } from "use-debounce"
 
 interface Destination {
   id: string;
@@ -34,7 +30,13 @@ interface Destination {
 }
 
 const formSchema = z.object({
-  city: z.string().min(1, "City is required"),
+  city: z.object({
+    name: z.string(),
+    country: z.string(),
+    countryCode: z.string(),
+  }, {
+    required_error: "Please select a city",
+  }),
   destinationId: z.string().min(1, "Destination is required"),
   travelType: z.enum(["BUDGET", "STANDARD", "LUXURY"], {
     required_error: "Travel type is required",
@@ -49,11 +51,19 @@ interface ItineraryFormProps {
   onSuccess: () => void
 }
 
+// Add this type for better error handling
+type ApiError = {
+  message: string;
+  errors?: Record<string, string[]>;
+}
+
 export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
   const [loading, setLoading] = useState(false)
   const [destinations, setDestinations] = useState<Destination[]>([])
   const [loadingDestinations, setLoadingDestinations] = useState(true)
   const router = useRouter()
+  const [cities, setCities] = useState<City[]>([])
+  const [searchingCities, setSearchingCities] = useState(false)
 
   useEffect(() => {
     const fetchDestinations = async () => {
@@ -74,10 +84,35 @@ export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
     fetchDestinations();
   }, []);
 
+  // Load popular cities on mount
+  useEffect(() => {
+    const loadPopularCities = async () => {
+      const popularCities = await CitiesService.getPopularCities()
+      setCities(popularCities)
+    }
+    loadPopularCities()
+  }, [])
+
+  // Debounced city search
+  const searchCities = useDebouncedCallback(async (query: string) => {
+    if (query.length < 2) return
+    
+    setSearchingCities(true)
+    try {
+      const results = await CitiesService.searchCities(query)
+      setCities(results)
+    } catch (error) {
+      console.error('Error searching cities:', error)
+      toast.error('Failed to search cities')
+    } finally {
+      setSearchingCities(false)
+    }
+  }, 300)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      city: "",
+      city: { name: "", country: "", countryCode: "" },
       destinationId: "",
       travelType: "STANDARD",
       duration: "3_DAYS",
@@ -90,7 +125,7 @@ export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
   useEffect(() => {
     if (watchCity && destinations.length > 0) {
       const matchingDestination = destinations.find(
-        dest => dest.name.toLowerCase().includes(watchCity.toLowerCase())
+        dest => dest.name.toLowerCase().includes(watchCity.name.toLowerCase())
       );
       
       if (matchingDestination) {
@@ -99,45 +134,49 @@ export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
     }
   }, [watchCity, destinations, form]);
 
+  const handleTravelTypeSelect = (value: "BUDGET" | "STANDARD" | "LUXURY") => {
+    form.setValue("travelType", value, { shouldValidate: true });
+  }
+
+  const handleDurationSelect = (value: "1_DAY" | "3_DAYS" | "1_WEEK" | "2_WEEKS") => {
+    form.setValue("duration", value, { shouldValidate: true });
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
     try {
-      setLoading(true)
-      
-      const startDate = new Date()
-      let endDate: Date
+      setLoading(true);
+
+      // Validate destination ID
+      if (!values.destinationId) {
+        toast.error("Please select a valid destination");
+        setLoading(false);
+        return;
+      }
+
+      // Create dates
+      const startDate = new Date();
+      let endDate: Date;
       
       switch (values.duration) {
         case "1_DAY":
-          endDate = addDays(startDate, 1)
-          break
+          endDate = addDays(startDate, 1);
+          break;
         case "3_DAYS":
-          endDate = addDays(startDate, 3)
-          break
+          endDate = addDays(startDate, 3);
+          break;
         case "1_WEEK":
-          endDate = addDays(startDate, 7)
-          break
+          endDate = addDays(startDate, 7);
+          break;
         case "2_WEEKS":
-          endDate = addDays(startDate, 14)
-          break
+          endDate = addDays(startDate, 14);
+          break;
         default:
-          endDate = addDays(startDate, 3)
+          endDate = addDays(startDate, 3);
       }
-      
-      const fallbackBody = {
-        city: values.city,
-        travelType: values.travelType,
-        duration: values.duration,
-        days: [],
-        notes: `${values.travelType.toLowerCase()} travel to ${values.city}`,
-        budget: {
-          currency: "USD",
-          total: 0,
-          categories: {}
-        }
-      }
-      
-      let generatedItinerary = fallbackBody
-      
+
+      // Generate itinerary
+      let generatedItinerary;
       try {
         const generateResponse = await fetch("/api/itineraries/generate", {
           method: "POST",
@@ -145,69 +184,85 @@ export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            city: values.city,
+            city: values.city.name,
             travelType: values.travelType,
             duration: values.duration,
           }),
-        })
+        });
 
-        if (generateResponse.ok) {
-          const data = await generateResponse.json()
-          if (data) {
-            generatedItinerary = data
-          }
+
+        if (!generateResponse.ok) {
+          const error = await generateResponse.json() as ApiError;
+          throw new Error(error.message || "Failed to generate itinerary");
         }
+
+        generatedItinerary = await generateResponse.json();
       } catch (genError) {
-        console.error("Error generating itinerary:", genError)
+        generatedItinerary = {
+          city: values.city.name,
+          travelType: values.travelType,
+          duration: values.duration,
+          days: [],
+          notes: `${values.travelType.toLowerCase()} travel to ${values.city.name}`,
+          budget: {
+            currency: "USD",
+            total: 0,
+            categories: {}
+          }
+        };
       }
-      
+
+      // Create itinerary
       const itineraryData = {
-        title: `Trip to ${values.city}`,
-        description: `${values.travelType.toLowerCase()} travel to ${values.city}`,
+        title: `Trip to ${values.city.name}`,
+        description: `${values.travelType.toLowerCase()} travel to ${values.city.name}`,
         startDate,
         endDate,
-        city: values.city,
+        city: values.city.name,
         travelType: values.travelType,
         duration: values.duration,
         isPublic: values.isPublic,
         destinationId: values.destinationId,
         body: generatedItinerary
-      }
-      
+      };
+
+      console.log("Creating itinerary with data:", itineraryData);
+
       const response = await fetch("/api/itineraries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(itineraryData),
-      })
+      });
+
+      console.log("Creation response status:", response.status);
 
       if (!response.ok) {
-        throw new Error("Failed to create itinerary")
+        const error = await response.json() as ApiError;
+        throw new Error(error.message || "Failed to create itinerary");
       }
 
-      const createdItinerary = await response.json()
-      onSuccess()
-      
-    } catch (error) {
-      console.error("Error creating itinerary:", error)
-      toast.error("Failed to create itinerary")
+      const createdItinerary = await response.json();
+      console.log("Created itinerary:", createdItinerary);
+
+      toast.success("Itinerary created successfully!");
+      onSuccess();
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error creating itinerary:", error);
+      toast.error(error.message || "Failed to create itinerary");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const handleTravelTypeSelect = (value: "BUDGET" | "STANDARD" | "LUXURY") => {
-    form.setValue("travelType", value);
-  }
-
-  const handleDurationSelect = (value: "1_DAY" | "3_DAYS" | "1_WEEK" | "2_WEEKS") => {
-    form.setValue("duration", value);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form 
+        onSubmit={form.handleSubmit(onSubmit)} 
+        className="space-y-6"
+      >
         <FormField
           control={form.control}
           name="city"
@@ -215,8 +270,29 @@ export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
             <FormItem>
               <FormLabel>Destination City</FormLabel>
               <FormControl>
-                <Input placeholder="Paris, Tokyo, New York..." {...field} />
+                <Combobox
+                  options={cities.map(city => ({
+                    label: `${city.name}, ${city.country}`,
+                    value: JSON.stringify(city)
+                  }))}
+                  value={field.value ? JSON.stringify(field.value) : ''}
+                  onSelect={(value) => {
+                    const city = JSON.parse(value)
+                    field.onChange(city)
+                    // Auto-set destination if matches
+                    const matchingDestination = destinations.find(
+                      dest => dest.name.toLowerCase().includes(city.name.toLowerCase())
+                    )
+                    if (matchingDestination) {
+                      form.setValue("destinationId", matchingDestination.id)
+                    }
+                  }}
+                  placeholder="Search for a city..."
+                />
               </FormControl>
+              <FormDescription>
+                Start typing to search for cities worldwide
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -342,11 +418,18 @@ export function ItineraryForm({ onSuccess }: ItineraryFormProps) {
           )}
         />
 
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button 
+          type="submit" 
+          onClick={() => {
+            alert("Are you sure you want to create this itinerary?");
+          }}
+          // disabled={loading || !form.formState.isValid}
+          className="w-full bg-neutral-800 hover:bg-neutral-700 text-white"
+        >
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Create Trip Plan
         </Button>
       </form>
     </Form>
-  )
+  );
 } 

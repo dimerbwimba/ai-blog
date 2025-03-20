@@ -104,7 +104,7 @@ export function SearchResults({ query, page, categories }: SearchResultsProps) {
                   Searching...
                 </span>
               ) : (
-                `Search Results for "${query}" (${pagination.total})`
+                `Search Results for "${query}" (${pagination?.total === undefined ? "Empty":pagination.total})`
               )}
             </h1>
           )}
@@ -116,7 +116,7 @@ export function SearchResults({ query, page, categories }: SearchResultsProps) {
           <h1 className="text-2xl font-bold mb-4">Search Travel Articles</h1>
           <p className="text-muted-foreground">Enter a search term to find articles</p>
         </div>
-      ) : results.length > 0 ? (
+      ) : results?.length > 0 ? (
         <>
           <div className="grid gap-8 sm:grid-cols-2">
             {results.map((post) => (

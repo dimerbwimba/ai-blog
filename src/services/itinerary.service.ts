@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { Prisma } from "@prisma/client"
 
 interface CreateItineraryDTO {
   title: string
@@ -93,73 +94,56 @@ export const ItineraryService = {
     }
   },
 
-  async getItineraryById(id: string) {
-    try {
-      const itinerary = await prisma.itinerary.findUnique({
-        where: { id },
-        include: {
-          destination: true
-        }
-      })
+  async getItinerary(id: string) {
+    if (!id) throw new Error("Itinerary ID is required")
 
-      if (!itinerary) {
-        return {
-          success: false,
-          error: 'Itinerary not found'
+    const itinerary = await prisma.itinerary.findUnique({
+      where: { id },
+      include: {
+        destination: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          }
         }
       }
+    })
 
-      return {
-        success: true,
-        data: itinerary
-      }
-    } catch (error) {
-      console.error('[GET_ITINERARY_ERROR]', error)
-      return {
-        success: false,
-        error: 'Failed to fetch itinerary'
-      }
-    }
+    if (!itinerary) throw new Error("Itinerary not found")
+    return itinerary
   },
 
-  async updateItinerary(updateData: UpdateItineraryDTO) {
-    try {
-      const { id, ...data } = updateData
-      
-      const itinerary = await prisma.itinerary.update({
-        where: { id },
-        data
-      })
+  async updateItinerary(id: string, data: Prisma.ItineraryUpdateInput) {
+    if (!id) throw new Error("Itinerary ID is required")
 
-      return {
-        success: true,
-        data: itinerary
+    const updatedItinerary = await prisma.itinerary.update({
+      where: { id },
+      data,
+      include: {
+        destination: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          }
+        }
       }
-    } catch (error) {
-      console.error('[UPDATE_ITINERARY_ERROR]', error)
-      return {
-        success: false,
-        error: 'Failed to update itinerary'
-      }
-    }
+    })
+
+    return updatedItinerary
   },
 
   async deleteItinerary(id: string) {
-    try {
-      await prisma.itinerary.delete({
-        where: { id }
-      })
+    if (!id) throw new Error("Itinerary ID is required")
 
-      return {
-        success: true
-      }
-    } catch (error) {
-      console.error('[DELETE_ITINERARY_ERROR]', error)
-      return {
-        success: false,
-        error: 'Failed to delete itinerary'
-      }
-    }
+    await prisma.itinerary.delete({
+      where: { id }
+    })
+
+    return { success: true }
   },
 
   async getPublicItineraries(limit = 10) {
