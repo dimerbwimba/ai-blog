@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 import { ItineraryEditDialog } from "./itinerary-edit-dialog"
-import { useItineraryStore } from "@/store/use-itinerary-store"
+import { Itinerary, useItineraryStore } from "@/store/use-itinerary-store"
 
 interface ItineraryListProps {
   itineraries: any[]
@@ -37,7 +37,7 @@ interface ItineraryListProps {
 export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryListProps) {
   const [editingItinerary, setEditingItinerary] = useState<any>(null)
   const [showEditDialog, setShowEditDialog] = useState(false)
-  const { openDetails } = useItineraryStore()
+  const { setSelectedItinerary, openDetails } = useItineraryStore()
 
   const handleDelete = async (id: string) => {
     try {
@@ -62,6 +62,11 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
   const handleEditSuccess = () => {
     setShowEditDialog(false)
     onUpdate()
+  }
+
+  const handleViewDetails = (itinerary: Itinerary) => {
+    setSelectedItinerary(itinerary)
+    openDetails()
   }
 
   return (
@@ -112,7 +117,7 @@ export function ItineraryList({ itineraries, onDelete, onUpdate }: ItineraryList
           </div>
 
           <div className=" grid grid-cols-3 gap-2">
-            <Button onClick={() => openDetails()} variant="outline" size="sm" className="w-full">
+            <Button onClick={() => handleViewDetails(itinerary)} variant="outline" size="sm" className="w-full">
               <Eye className="mr-2 h-4 w-4" />
               View Details
             </Button>
