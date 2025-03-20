@@ -21,11 +21,12 @@ const checkAuthorization = async (itineraryId: string) => {
 // GET /api/itineraries/[id]
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuthorization(params.id)
-    const itinerary = await ItineraryService.getItinerary(params.id)
+    const {id} = await params
+    await checkAuthorization(id)
+    const itinerary = await ItineraryService.getItinerary(id)
     
     return NextResponse.json(itinerary)
   } catch (error: any) {
@@ -39,13 +40,14 @@ export async function GET(
 // PATCH /api/itineraries/[id]
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuthorization(params.id)
+    const {id} = await params
+    await checkAuthorization(id)
     const data = await req.json()
     
-    const updatedItinerary = await ItineraryService.updateItinerary(params.id, data)
+    const updatedItinerary = await ItineraryService.updateItinerary(id, data)
     
     return NextResponse.json(updatedItinerary)
   } catch (error: any) {
@@ -59,11 +61,12 @@ export async function PATCH(
 // DELETE /api/itineraries/[id]
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await checkAuthorization(params.id)
-    await ItineraryService.deleteItinerary(params.id)
+    const {id} = await params
+    await checkAuthorization(id)
+    await ItineraryService.deleteItinerary(id)
     
     return NextResponse.json({ success: true })
   } catch (error: any) {
