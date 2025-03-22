@@ -1,44 +1,48 @@
-import { Metadata } from "next"
-import { BlogPost } from "@/components/blog/blog-post"
-import { NotFound } from "@/components/blog/not-found"
+import { Metadata } from "next";
+import { BlogPost } from "@/components/blog/blog-post";
+import { NotFound } from "@/components/blog/not-found";
 
 interface BlogPostPageProps {
   params: Promise<{
-    slug: string
-  }>
+    slug: string;
+  }>;
 }
 
 async function getPost(slug: string) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/travel/${slug}`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/travel/${slug}`,
       {
         next: {
-          revalidate: 60
-        }
-      },
-
-    )
-    if (!response.ok) throw new Error('Failed to fetch post')
-    return await response.json()
+          revalidate: 60,
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch post");
+    return await response.json();
   } catch (error) {
-    console.error('[GET_POST_ERROR]', error)
-    return null
+    console.error("[GET_POST_ERROR]", error);
+    return null;
   }
 }
 
-export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const {slug} = await params
-  const post = await getPost(slug)
+export async function generateMetadata({
+  params,
+}: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
 
   if (!post) {
     return {
-      title: 'Travel Article Not Found',
-      description: 'The travel article you are looking for seems to have wandered off. Let\'s help you find your way back to familiar territory.',
+      title: "Travel Article Not Found",
+      description:
+        "The travel article you are looking for seems to have wandered off. Let's help you find your way back to familiar territory.",
       openGraph: {
-        title: 'Travel Article Not Found',
-        description: 'The travel article you are looking for seems to have wandered off. Let\'s help you find your way back to familiar territory.',
-      }
-    }
+        title: "Travel Article Not Found",
+        description:
+          "The travel article you are looking for seems to have wandered off. Let's help you find your way back to familiar territory.",
+      },
+    };
   }
 
   return {
@@ -48,37 +52,70 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     openGraph: {
       title: post.title,
       description: post.description,
-      type: 'article',
+      type: "article",
       url: `${process.env.NEXT_PUBLIC_APP_URL}/blog/${post.slug}`,
       images: [
         {
           url: post.image,
           width: 1200,
           height: 630,
-          alt: post.title
-        }
-      ]
+          alt: post.title,
+        },
+      ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: post.title,
       description: post.description,
-      images: [post.image]
-    }
-  }
+      images: [post.image],
+    },
+  };
 }
 
 export default async function TravelPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params
-  const post = await getPost(slug)
-  
+  const { slug } = await params;
+  const post = await getPost(slug);
+
   if (!post) {
-    return <NotFound /> 
+    return <NotFound />;
   }
 
   return (
     <article>
       <BlogPost post={post} />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          image: post.image,
+          datePublished: post.createdAt,
+          author: {
+            "@type": "Person",
+            name: post.author.name,
+          },
+          description: post.description,
+          keywords: post.keywords,
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": post.seo_slug,
+          },
+          hasPart:
+            post.faqs.length > 0
+              ? {
+                  "@type": "FAQPage",
+                  mainEntity: post.faqs.map((faq:{question:string, answer:string}) => ({
+                    "@type": "Question",
+                    name: faq.question,
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: faq.answer,
+                    },
+                  })),
+                }
+              : undefined,
+        })}
+      </script>
     </article>
-  )
-} 
+  );
+}

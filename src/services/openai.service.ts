@@ -265,60 +265,8 @@ export const OpenAIService = {
               `You are an expert travel blog outline generator focused on high-quality, SEO-friendly content. 
         Your goal is to generate well-structured and detailed outlines that maximize readability, keyword relevance, 
         and search ranking potential. Ensure the outline follows a logical hierarchy, using descriptive and keyword-rich headings.
-        
-        If the topic is about travel budgets or costs, follow this general structure as a guideline but feel free to expand as needed:
-        
-        **Introduction**
-        - Brief overview of [Destination Name] as a travel destination  
-        - Key attractions and experiences  
-        - Purpose of the guide (help travelers budget their trip)  
-
-        **How much does it cost to travel to [Destination Name]?**  
-        - Overview of average daily travel expenses  
-        - Factors that influence costs (season, travel style, etc.)  
-
-        **Understanding Travel Budgets**  
-        - Importance of planning expenses  
-        - How different travelers spend differently  
-
-        **Defining Travel Styles**  
-        - Budget, mid-range, and luxury travelers  
-        - What each style includes in terms of accommodations, activities, and dining  
-
-        **Average Travel Costs in [Destination Name]**  
-
-        **Provide a breakdown of typical daily expenses**  
-        - Accommodation  
-        - Food  
-        - Transportation  
-        - Activities  
-        - Miscellaneous expenses  
-
-        **Accommodation Costs**  
-        - Price comparisons (budget, mid-range, luxury)  
-        - Best areas to stay  
-
-        **Food and Dining Costs**  
-        - Street food vs. casual dining vs. fine dining  
-        - Cost-saving food tips  
-
-        **Transportation Costs**  
-        - Public transport, taxis, rideshares, rentals  
-
-        **Entertainment and Sightseeing Costs**  
-        - Entry fees, tour costs, free activities  
-
-        **Nightlife and Alcohol Costs**  
-        - Drink prices, nightlife experiences  
-
-        **Travel Costs for Different Trip Durations**  
-        - Budget breakdown for one week, two weeks, and a month  
-
-        **Budgeting Tips and Challenges**  
-        - Best times to visit for lower prices  
-        - Discount passes and cost-saving strategies  
-
-        If the question is **not** about budget or cost, generate a high-quality outline based on best SEO practices, ensuring clear structure, engaging subtopics, and relevant keyword-rich headings. Return only a JSON array without additional formatting or markdown.`,
+        Return  a well concise JSON with no additional formating .
+       `,
           },
           {
             role: "user",
@@ -332,6 +280,17 @@ export const OpenAIService = {
               ${research.results.map((r) => r.rowContent).join("\n")} 
               ${research.results.map((r) => `- ${r.content}`).join("\n")} 
               ${research.images.map((i) => `- ${i.url}`).join("\n")}
+
+              *Guidline
+              - prioritize question on the h2
+              - Prioritize questions more, evoid fomarl questions dont add introduction just add the main important question about the topic.
+              - Dont add : just keep the question on the same line 
+              - Use first-person pronouns and active voice to make the content more engaging and relatable.
+              - Add  personality to it. Make it feel like it was written by a real person
+              - Imagine you're explaining this topic to a friend. Write it as if you're having a casual conversation
+              - Sound more natural and human, avoiding overly complex words and phrases.
+              
+              
               at the end
                    Generate a JSON object without additional formatting or markdown syntax. Here is the structure:
               [

@@ -155,39 +155,7 @@ export function BlogPost({ post }: BlogPostProps) {
           ))}
         </div>
       </div>
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          headline: post.title,
-          image: post.image,
-          datePublished: post.createdAt,
-          author: {
-            "@type": "Person",
-            name: post.author.name,
-          },
-          description: post.description,
-          keywords: post.keywords,
-          mainEntityOfPage: {
-            "@type": "WebPage",
-            "@id": post.seo_slug,
-          },
-          hasPart:
-            post.faqs.length > 0
-              ? {
-                  "@type": "FAQPage",
-                  mainEntity: post.faqs.map((faq) => ({
-                    "@type": "Question",
-                    name: faq.question,
-                    acceptedAnswer: {
-                      "@type": "Answer",
-                      text: faq.answer,
-                    },
-                  })),
-                }
-              : undefined,
-        })}
-      </script>
+    
     </article>
   );
 }
