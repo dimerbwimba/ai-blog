@@ -17,6 +17,7 @@ interface Post {
   image: string
   createdAt: string
   slug:string
+  seoSlug: string
   author: {
     name: string
     image: string
@@ -203,7 +204,7 @@ export function DestinationsGrid({
                   {destinations[0].posts?.slice(0, 3).map((post) => (
                     <Link 
                       key={post.id}
-                      href={`/travel/${post.slug}`}
+                      href={`/travel/${post.seoSlug}`}
                       className="block group"
                     >
                       <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
