@@ -100,20 +100,6 @@ export default async function TravelPostPage({ params }: BlogPostPageProps) {
             "@type": "WebPage",
             "@id": post.seo_slug,
           },
-          hasPart:
-            post.faqs.length > 0
-              ? {
-                  "@type": "FAQPage",
-                  mainEntity: post.faqs.map((faq:{question:string, answer:string}) => ({
-                    "@type": "Question",
-                    name: faq.question,
-                    acceptedAnswer: {
-                      "@type": "Answer",
-                      text: faq.answer,
-                    },
-                  })),
-                }
-              : undefined,
         })}
       </script>
     </article>
